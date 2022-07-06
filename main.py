@@ -80,7 +80,7 @@ def read_item(patente_id: int):
     """
     
     if patente_id not in range(1,26001):
-        raise HTTPException(status_code=404, detail="La placa ingresada no existe, las placas registradas estan en el rango del 1 al 26000")
+        raise HTTPException(status_code=404, detail="La patente ingresada no existe, las patentes registradas estan en el rango del 1 al 26000")
 
     patente = get_patente(patente_id)
 

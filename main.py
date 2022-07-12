@@ -9,7 +9,8 @@ app = FastAPI()
 #Invalida los mensajes predeterminados de Fastapi cuando ocurre un error
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
-    return PlainTextResponse("{Error : La patente ingresada es incorrecta, verifique e intente nuevamente}", status_code=400)
+    msg_error = 'La patente ingresada es incorrecta, verifique e intente nuevamente'
+    return PlainTextResponse("{Error : %s}" % msg_error, status_code=400)
 
 @app.get("/")
 def read_root():
@@ -33,7 +34,7 @@ def get_placas():
 
     return placas
 
-def get_patente(patente_id):
+def get_id(patente_id):
     """Función que busca una patente por su id.
     Parámetros:
         patente_id : Es un número entero.
@@ -48,7 +49,7 @@ def get_patente(patente_id):
             return patente
 
 @app.get("/patente/{patente}")
-def read_item(patente: str):
+def get_patente(patente: str):
     """Función que busca una placa y devuelve el id.
     Parámetros:
         patente : Es una cadena de caracteres con un mismo patrón cuatro letras y tres números, ejemplo:AAAA000.
@@ -62,13 +63,14 @@ def read_item(patente: str):
     placas = get_placas()
 
     if patente not in placas:
-        raise HTTPException(status_code=404, detail="La patente ingresada es incorrecta, verifique e intente nuevamente")
+        msg_error = "La patente ingresada es incorrecta, verifique e intente nuevamente"
+        raise HTTPException(status_code=404, detail=msg_error)
     
     return {"patente_id": placas[patente]}
 
 
 @app.get("/patente_id/{patente_id}")
-def read_item(patente_id: int):
+def get_patente_id(patente_id: int):
     """Función que busca una placa y devuelve el id.
     
     Parámetros:
@@ -80,8 +82,9 @@ def read_item(patente_id: int):
     """
     
     if patente_id not in range(1,26001):
-        raise HTTPException(status_code=404, detail="La patente ingresada no existe, las patentes registradas estan en el rango del 1 al 26000")
+        msg_error = "La patente ingresada no existe, las patentes registradas estan en el rango del 1 al 26000"
+        raise HTTPException(status_code=404, detail=msg_error)
 
-    patente = get_patente(patente_id)
+    patente = get_id(patente_id)
 
     return {"patente": patente}
